@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bj1740tlnr1qd"]
+
+[ext_resource type="Texture2D" uid="uid://bfxplkrkpvpk6" path="res://assets/board.png" id="1_bw3vb"]
+
+[node name="Board" type="Node2D" unique_id=661661097]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1747598910]
+scale = Vector2(4, 4)
+texture = ExtResource("1_bw3vb")
+centered = false
