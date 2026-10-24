@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://bvrl44rydgtxx"]
+
+[ext_resource type="Script" uid="uid://c51200irestng" path="res://scripts/cell.gd" id="1_upbjj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fdm2o"]
+size = Vector2(32, 32)
+
+[sub_resource type="Gradient" id="Gradient_upbjj"]
+offsets = PackedFloat32Array(0.016826924, 1)
+colors = PackedColorArray(1, 0.9098039, 0, 0.7019608, 1, 0.9098039, 0, 0.7019608)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_fdm2o"]
+gradient = SubResource("Gradient_upbjj")
+width = 32
+height = 32
+
+[node name="Cell" type="Area2D" unique_id=1641725449]
+script = ExtResource("1_upbjj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=682952106]
+position = Vector2(16, 16)
+shape = SubResource("RectangleShape2D_fdm2o")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1902338414]
+texture = SubResource("GradientTexture2D_fdm2o")
+centered = false
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

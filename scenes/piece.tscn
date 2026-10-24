@@ -1,21 +1,22 @@
 [gd_scene format=3 uid="uid://cn4gfjcocdevi"]
 
 [ext_resource type="Texture2D" uid="uid://bwps6j6li3hn" path="res://assets/pieces.png" id="1_gebih"]
+[ext_resource type="Script" uid="uid://qfnc72lqs2mk" path="res://scripts/piece.gd" id="1_s58gp"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_fdm2o"]
-radius = 14.002232
+[sub_resource type="CircleShape2D" id="CircleShape2D_s58gp"]
+radius = 14.035668
 
-[node name="Piece" type="Node2D" unique_id=2113615661]
-scale = Vector2(4, 4)
+[node name="Piece" type="Area2D" unique_id=1491834300]
+script = ExtResource("1_s58gp")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1133918717]
-position = Vector2(16, 16)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=735859866]
 texture = ExtResource("1_gebih")
+centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 32, 32)
 
-[node name="Area2D" type="Area2D" parent="." unique_id=1464837715]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=363706592]
 position = Vector2(16, 16)
+shape = SubResource("CircleShape2D_s58gp")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=119149064]
-shape = SubResource("CircleShape2D_fdm2o")
+[connection signal="input_event" from="." to="." method="_on_input_event"]
