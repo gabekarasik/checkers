@@ -5,9 +5,11 @@ extends Node2D
 
 var occupied : Dictionary = {}
 var moving_piece
+var turn : String
 
 func _ready() -> void:
 	setup_pieces()
+	turn = "black"
 
 func setup_pieces():
 	place_white()
@@ -54,3 +56,9 @@ func place_black():
 				if x != 7:
 					x %= 7
 		
+func switch_turn():
+	if turn == "black":
+		turn = "white"
+	else:
+		turn = "black"
+	print(turn)

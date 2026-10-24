@@ -23,14 +23,21 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if Input.is_action_just_released("click"):
 		if board.moving_piece:
 			board.moving_piece.hide_moves()
-		board.moving_piece = self
-		var possible_moves
-		if type == "white":
-			possible_moves = w_moves
-			show_moves(possible_moves)
-		elif type == "black":
-			possible_moves = b_moves
-			show_moves(possible_moves)
+			if board.moving_piece == self:
+				board.moving_piece = null
+				return
+			board.moving_piece = null
+			
+		
+		if board.turn == type:
+			board.moving_piece = self
+			var possible_moves
+			if type == "white":
+				possible_moves = w_moves
+				show_moves(possible_moves)
+			elif type == "black":
+				possible_moves = b_moves
+				show_moves(possible_moves)
 			
 			
 func show_moves(possible_moves):
@@ -54,3 +61,5 @@ func make_move(move):
 	cell += move
 	board.occupied[cell] = self
 	position = cell * 32
+	board.moving_piece = null
+	board.switch_turn()
