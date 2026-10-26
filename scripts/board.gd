@@ -61,4 +61,3 @@ func switch_turn():
 		turn = "white"
 	else:
 		turn = "black"
-	print(turn)
