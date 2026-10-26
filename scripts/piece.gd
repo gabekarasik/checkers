@@ -7,60 +7,66 @@ extends Area2D
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var board = get_parent()
 
-@onready var w_moves : Array = [
+var w_moves : Array = [
 	Vector2(1, 1),
 	Vector2(-1, 1)
 ]
 
-@onready var b_moves : Array = [
+var b_moves : Array = [
 	Vector2(1, -1), 
 	Vector2(-1, -1)
 ]
 
+@onready var all_moves : Array =  w_moves + b_moves
+
 var moves = []
 var is_king : bool = false
+var just_captured = false
 
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if board.capturing_piece:
+			end_turn()
+			return
+		
 		if board.moving_piece:
 			board.moving_piece.hide_moves()
 			if board.moving_piece == self:
 				board.moving_piece = null
 				return
 			board.moving_piece = null
-			
 		
-		if board.turn == type:
-			board.moving_piece = self
-			var possible_moves
-			if type == "white":
-				possible_moves = w_moves.duplicate()
-				if is_king:
-					possible_moves.append_array(b_moves.duplicate())
-				show_moves(possible_moves)
-				
-			elif type == "black":
-				possible_moves = b_moves.duplicate()
-				if is_king:
-					possible_moves.append_array(w_moves.duplicate())
-				show_moves(possible_moves)
-				
+		check_moves()
 			
+func check_moves():
+	if board.turn == type:
+		board.moving_piece = self
+		var possible_moves
+		if is_king:
+			possible_moves = all_moves
+		elif type == "white":
+			possible_moves = w_moves
+		elif type == "black":
+			possible_moves = b_moves
 			
+		show_moves(possible_moves)
+		
 func show_moves(possible_moves):
-	var i = 0
 	for possible_move in possible_moves:
-		i += 1
 		var new_cell = cell + possible_move
-		if !board.occupied.has(new_cell):
-			var move_cell = cell_scene.instantiate()
-			move_cell.cell = possible_move
-			move_cell.position = possible_move * 32
-			moves.append(move_cell)
-			add_child(move_cell)
-		else:
-			check_capture(new_cell, possible_move)
-			
+		if new_cell.x >= 0 and new_cell.x <= 7 and new_cell.y >= 0 and new_cell.y <= 7:
+			if !board.occupied.has(new_cell):
+				if !just_captured:
+					var move_cell = cell_scene.instantiate()
+					move_cell.cell = possible_move
+					move_cell.position = possible_move * 32
+					moves.append(move_cell)
+					add_child(move_cell)
+			else:
+				check_capture(new_cell, possible_move)
+	
+	if just_captured and !moves:
+		end_turn()
 
 func check_capture(new_cell, possible_move):
 	if board.occupied[new_cell].type != type:
@@ -86,10 +92,15 @@ func make_move(move):
 	position = cell * 32
 	if !is_king:
 		check_king()
-	board.moving_piece = null
-	board.switch_turn()
+	
+	if !just_captured:
+		end_turn()
+	else:
+		check_moves()
 
 func capture(move):
+	just_captured = true
+	board.capturing_piece = self
 	board.occupied[cell + move/2].queue_free()
 	board.occupied.erase(cell + move/2)
 	make_move(move)
@@ -101,3 +112,12 @@ func check_king():
 	elif type == "black" and cell.y == 0:
 		is_king = true
 		sprite.region_rect = Rect2(32, 32, 32, 32)
+
+func end_turn():
+	if board.capturing_piece:
+		board.capturing_piece.hide_moves()
+		board.capturing_piece.just_captured = false
+		
+	board.capturing_piece = null
+	board.moving_piece = null
+	board.switch_turn()

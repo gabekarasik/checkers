@@ -6,6 +6,7 @@ extends Node2D
 var occupied : Dictionary = {}
 var moving_piece
 var turn : String
+var capturing_piece
 
 func _ready() -> void:
 	setup_pieces()
@@ -61,3 +62,4 @@ func switch_turn():
 		turn = "white"
 	else:
 		turn = "black"
+	print(turn)
