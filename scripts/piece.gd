@@ -101,10 +101,8 @@ func make_move(move):
 func capture(move):
 	if type == "black":
 		board.num_white -= 1
-		print("White remaining:", board.num_white)
 	else:
 		board.num_black -= 1
-		print("Black remaining:", board.num_black)
 	just_captured = true
 	board.capturing_piece = self
 	board.occupied[cell + move/2].queue_free()

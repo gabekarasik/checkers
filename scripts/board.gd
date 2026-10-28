@@ -3,6 +3,7 @@ extends Node2D
 @onready var piece_scene = load("res://scenes/piece.tscn")
 @onready var cell_scene = load("res://scenes/cell.tscn")
 
+var start_cell : Vector2 = Vector2(3.5, 3.5)
 var occupied : Dictionary = {}
 var moving_piece
 var turn : String
@@ -21,6 +22,7 @@ func start_game():
 func setup_pieces():
 	place_white()
 	place_black()
+	animate_pieces()
 	num_white = 12
 	num_black = 12
 	
@@ -33,9 +35,11 @@ func place_white():
 			piece = piece_scene.instantiate()
 			piece.type = "white"
 			piece.cell = Vector2(x, y)
-			piece.position = piece.cell * 32
+			piece.position = start_cell * 32
+			piece.visible = false
 			occupied[piece.cell] = piece
 			add_child(piece)
+
 			if x == 7:
 				x %= 7
 			else:
@@ -43,7 +47,6 @@ func place_white():
 				if x != 7:
 					x %= 7
 					
-
 func place_black():
 	var x = 0
 	var piece
@@ -52,9 +55,9 @@ func place_black():
 		for i in range(4):
 			piece = piece_scene.instantiate()
 			piece.type = "black"
-			
 			piece.cell = Vector2(x, y)
-			piece.position = piece.cell * 32
+			piece.position = start_cell * 32
+			piece.visible = false
 			occupied[piece.cell] = piece
 			add_child(piece)
 			piece.sprite.region_rect = Rect2(32, 0, 32, 32)
@@ -64,6 +67,18 @@ func place_black():
 				x += 2
 				if x != 7:
 					x %= 7
+
+func animate_pieces():
+	var i = 0
+	for cell in occupied:
+		var piece = occupied[cell]
+		
+		var tween = get_tree().create_tween()
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_QUART)
+		tween.tween_property(piece, "visible", true, 0).set_delay(i * 0.05)
+		tween.tween_property(piece, "position", piece.cell * 32, 0.5).set_delay(0.02)
+		i += 1
 		
 func switch_turn():
 	if turn == "black":
