@@ -7,14 +7,22 @@ var occupied : Dictionary = {}
 var moving_piece
 var turn : String
 var capturing_piece
+var num_white
+var num_black
 
 func _ready() -> void:
-	setup_pieces()
-	turn = "black"
+	start_game()
 
+func start_game():
+	$HUD.hide()
+	turn = "black"
+	setup_pieces()
+	
 func setup_pieces():
 	place_white()
 	place_black()
+	num_white = 12
+	num_black = 12
 	
 func place_white():
 	var x = 1
@@ -59,7 +67,21 @@ func place_black():
 		
 func switch_turn():
 	if turn == "black":
+		if num_white == 0:
+			end_game("Black")
 		turn = "white"
 	else:
+		if num_black == 0:
+			end_game("White")
 		turn = "black"
-	print(turn)
+		
+func end_game(winner : String):
+	$HUD/VBoxContainer/Winner_Label.text = winner + " Wins!"
+	$HUD.show()
+	
+func reset():
+	for cell in occupied:
+		occupied[cell].queue_free()
+	occupied = {}
+	
+	start_game()

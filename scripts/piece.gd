@@ -36,20 +36,20 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 				return
 			board.moving_piece = null
 		
-		check_moves()
+		if board.turn == type:
+			check_moves()
 			
 func check_moves():
-	if board.turn == type:
-		board.moving_piece = self
-		var possible_moves
-		if is_king:
-			possible_moves = all_moves
-		elif type == "white":
-			possible_moves = w_moves
-		elif type == "black":
-			possible_moves = b_moves
-			
-		show_moves(possible_moves)
+	board.moving_piece = self
+	var possible_moves
+	if is_king:
+		possible_moves = all_moves
+	elif type == "white":
+		possible_moves = w_moves
+	elif type == "black":
+		possible_moves = b_moves
+		
+	show_moves(possible_moves)
 		
 func show_moves(possible_moves):
 	for possible_move in possible_moves:
@@ -99,6 +99,12 @@ func make_move(move):
 		check_moves()
 
 func capture(move):
+	if type == "black":
+		board.num_white -= 1
+		print("White remaining:", board.num_white)
+	else:
+		board.num_black -= 1
+		print("Black remaining:", board.num_black)
 	just_captured = true
 	board.capturing_piece = self
 	board.occupied[cell + move/2].queue_free()
